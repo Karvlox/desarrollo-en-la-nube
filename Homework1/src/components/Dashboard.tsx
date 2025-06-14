@@ -1,4 +1,4 @@
-import { useContext, useState, type FormEvent } from "react";
+import { useContext, useState, useEffect, type FormEvent } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import styles from "./Dashboard.module.css";
@@ -78,6 +78,14 @@ const Dashboard = () => {
     <div className={styles.container}>
       <h2 className={styles.heading}>Bienvenido, {authContext?.user?.email}</h2>
       {error && <p className={styles.error}>{error}</p>}
+      {authContext?.customClaims && (
+        <div className={styles.claims}>
+          <h3 className={styles.subheading}>Información Personal:</h3>
+          <p><strong>Dirección:</strong> {authContext.customClaims.direccion || 'No especificada'}</p>
+          <p><strong>Fecha de Nacimiento:</strong> {authContext.customClaims.fechaNacimiento || 'No especificada'}</p>
+          <p><strong>Edad:</strong> {authContext.customClaims.edad || 'No especificada'}</p>
+        </div>
+      )}
       <h3 className={styles.subheading}>Proveedores vinculados:</h3>
       <ul className={styles.providerList}>
         {providers.map((provider) => (

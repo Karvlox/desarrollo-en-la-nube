@@ -22,6 +22,16 @@ import {
 import { auth, googleProvider, facebookProvider } from "../firebase/config";
 
 /**
+ * @interface CustomClaims
+ * @description Tipo para los custom claims personalizados.
+ */
+interface CustomClaims {
+  direccion?: string;
+  fechaNacimiento?: string;
+  edad?: number;
+}
+
+/**
  * @interface AuthContextType
  * @description Tipo para el contexto de autenticación, define las propiedades y métodos disponibles.
  */
@@ -35,6 +45,7 @@ interface AuthContextType {
   linkGoogle: () => Promise<string | void>;
   linkFacebook: () => Promise<string | void>;
   unlinkProvider: (providerId: string) => Promise<string | void>;
+  customClaims?: CustomClaims; // Añadir los claims al contexto
 }
 
 /**
@@ -51,7 +62,7 @@ interface AuthProviderProps {
  * @function translateFirebaseError
  * @description Traduce códigos de error de Firebase a mensajes en español para el usuario.
  * @param {AuthError} error - Error devuelto por Firebase.
- * @returns {string} Mensaje de частью legible para el usuario.
+ * @returns {string} Mensaje de parte legible para el usuario.
  */
 const translateFirebaseError = (error: AuthError): string => {
   switch (error.code) {
@@ -87,13 +98,20 @@ const translateFirebaseError = (error: AuthError): string => {
  */
 export const AuthProvider = ({ children }: AuthProviderProps) => {
   const [user, setUser] = useState<User | null>(null);
+  const [customClaims, setCustomClaims] = useState<CustomClaims | undefined>(undefined);
 
   /**
-   * @description Escucha cambios en el estado de autenticación y actualiza el usuario.
+   * @description Escucha cambios en el estado de autenticación y actualiza el usuario y los claims.
    */
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
+      if (currentUser) {
+        const idTokenResult = await currentUser.getIdTokenResult();
+        setCustomClaims(idTokenResult.claims as CustomClaims); // Obtener los claims
+      } else {
+        setCustomClaims(undefined); // Limpiar claims si no hay usuario
+      }
     });
     return () => unsubscribe();
   }, []);
@@ -232,6 +250,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         linkGoogle,
         linkFacebook,
         unlinkProvider,
+        customClaims, // Exponer los claims al contexto
       }}
     >
       {children}
