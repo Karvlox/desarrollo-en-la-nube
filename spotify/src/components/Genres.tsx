@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { db } from '../firebase';
 import { collection, getDocs } from 'firebase/firestore';
 import { Link } from 'react-router-dom';
-import '../styles/Genres.css'; // Importa el archivo CSS
+import '../styles/Genres.css';
 
 const Genres: React.FC = () => {
   const [genres, setGenres] = useState<{ id: string; name: string }[]>([]);

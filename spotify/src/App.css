@@ -12,8 +12,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-
-/* Mensajes de error */
 .auth-error {
   background-color: #e63946;
   color: white;

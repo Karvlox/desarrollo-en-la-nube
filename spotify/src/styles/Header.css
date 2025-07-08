@@ -41,13 +41,11 @@
   color: #1DB954;
 }
 
-/* Logo */
 .logo {
   height: 36px;
   width: auto;
 }
 
-/* Profile icon */
 .profile-icon {
   height: 36px;
   width: 36px;
@@ -61,7 +59,6 @@
   border-color: #1DB954;
 }
 
-/* Nav text links */
 .nav-text {
   color: white;
   font-weight: 500;
@@ -73,7 +70,6 @@
   transition: color 0.3s ease;
 }
 
-/* Logout button styles */
 .logout-button {
   width: 36px;
   height: 36px;
@@ -91,9 +87,7 @@
   background-color: rgba(29, 185, 84, 0.15);
 }
 
-/* Tooltip styling with title attribute default browser tooltip */
 
-/* Responsive */
 @media (max-width: 768px) {
   .nav {
     flex-direction: column;
