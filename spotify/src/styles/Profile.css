@@ -1,0 +1,79 @@
+.profile-container {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 24px;
+  background-color: #191414;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+  color: white;
+}
+
+.profile-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 24px;
+  text-align: center;
+}
+
+.songs-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.song-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #282828;
+  padding: 16px 20px;
+  border-radius: 12px;
+  margin-bottom: 14px;
+  transition: background-color 0.2s ease;
+}
+
+.song-item:hover {
+  background: #1db954;
+  cursor: pointer;
+}
+
+.song-info {
+  flex-grow: 1;
+  margin-right: 20px;
+}
+
+.song-name {
+  margin: 0 0 8px 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.song-player {
+  width: 100%;
+  outline: none;
+  border-radius: 6px;
+}
+
+.delete-button {
+  background: transparent;
+  border: none;
+  color: #e22134;
+  font-size: 22px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: color 0.3s ease;
+  padding: 4px 8px;
+  border-radius: 6px;
+  line-height: 1;
+}
+
+.delete-button:hover {
+  color: #ff5555;
+}
+
+.no-songs {
+  text-align: center;
+  font-size: 16px;
+  color: #ccc;
+  margin-top: 40px;
+}

@@ -1,0 +1,114 @@
+.header {
+  width: 100%;
+  background-color: #000;
+  padding: 15px 30px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 20px;
+}
+
+.nav-left,
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-icon {
+  color: white;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding: 4px;
+  transition: color 0.3s ease;
+}
+
+.nav-icon:hover,
+.nav-text:hover {
+  color: #1DB954;
+}
+
+/* Logo */
+.logo {
+  height: 36px;
+  width: auto;
+}
+
+/* Profile icon */
+.profile-icon {
+  height: 36px;
+  width: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid transparent;
+  transition: border-color 0.3s ease;
+}
+
+.nav-icon:hover .profile-icon {
+  border-color: #1DB954;
+}
+
+/* Nav text links */
+.nav-text {
+  color: white;
+  font-weight: 500;
+  font-size: 20px;
+  cursor: pointer;
+  text-decoration: none;
+  position: relative;
+  padding: 4px 6px;
+  transition: color 0.3s ease;
+}
+
+/* Logout button styles */
+.logout-button {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  border-radius: 6px;
+  transition: color 0.3s ease, background-color 0.3s ease;
+}
+
+.logout-button:hover {
+  color: #1DB954;
+  background-color: rgba(29, 185, 84, 0.15);
+}
+
+/* Tooltip styling with title attribute default browser tooltip */
+
+/* Responsive */
+@media (max-width: 768px) {
+  .nav {
+    flex-direction: column;
+    gap: 15px;
+  }
+  .nav-left,
+  .nav-right {
+    justify-content: center;
+    gap: 15px;
+  }
+  .nav-text {
+    font-size: 16px;
+  }
+  .logo, .profile-icon, .logout-button {
+    height: 28px;
+    width: 28px;
+  }
+}

@@ -1,0 +1,44 @@
+.genres-container {
+  padding: 24px;
+}
+
+.genres-title {
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+.genres-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 16px;
+}
+
+.genre-card {
+  display: flex;
+  align-items: center;
+  background-color: #262626;
+  border-radius: 16px;
+  padding: 16px;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.genre-card:hover {
+  background-color: #3d3d3d;
+}
+
+.genre-image {
+  width: 64px;
+  height: 64px;
+  border-radius: 12px;
+  object-fit: cover;
+  margin-right: 16px;
+}
+
+.genre-name {
+  color: white;
+  font-size: 18px;
+  font-weight: 500;
+}
