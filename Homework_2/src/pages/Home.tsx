@@ -1,16 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { useAuth } from '../AuthContext';
-import { doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove } from 'firebase/firestore';
-import { firebaseDb, firebaseAuth } from '../firebase';
+import { doc, getDoc, setDoc, updateDoc, arrayUnion, arrayRemove, getDocs, collection } from 'firebase/firestore';
+import { firebaseDb, firebaseAuth, firebaseMessaging } from '../firebase';
 import PostForm from './PostForm';
 import PostList from './PostList';
 import { Link } from 'react-router-dom';
+import { getToken } from 'firebase/messaging';
+import NotificationPanel from '../components/NotificationPanel';
 
 const Home = () => {
   const { currentUser } = useAuth();
   const [userData, setUserData] = useState(null);
   const [posts, setPosts] = useState([]);
   const [successMessage, setSuccessMessage] = useState('');
+  const [notificationPermission, setNotificationPermission] = useState(null);
 
   useEffect(() => {
     if (currentUser) {
@@ -39,24 +42,53 @@ const Home = () => {
         }
       };
       fetchUserData();
+
+      // Solicitar permiso para notificaciones
+      if ('Notification' in window && Notification.permission !== 'granted' && Notification.permission !== 'denied') {
+        Notification.requestPermission().then((permission) => {
+          setNotificationPermission(permission);
+          if (permission === 'granted') {
+            getToken(firebaseMessaging, { vapidKey: 'TU_VAPID_KEY_AQUÍ' }) // Reemplaza con tu VAPID key
+              .then((currentToken) => {
+                if (currentToken) {
+                  console.log('Token de notificación:', currentToken);
+                  // Guarda el token en Firestore si es necesario
+                  updateUserToken(currentUser.uid, currentToken);
+                } else {
+                  console.log('No se obtuvo un token de notificación.');
+                }
+              })
+              .catch((err) => {
+                console.log('Error al obtener el token:', err);
+              });
+          }
+        });
+      }
     }
   }, [currentUser]);
 
-  const handleCreatePost = async (postData) => {
-  if (!postData.content.trim() && !postData.imageUrl) return;
+  const updateUserToken = async (uid, token) => {
+    const userDocRef = doc(firebaseDb, 'users', uid);
+    await updateDoc(userDocRef, { notificationToken: token }, { merge: true });
+  };
 
-  const postDocRef = doc(firebaseDb, 'posts', currentUser.uid);
-  try {
-    await updateDoc(postDocRef, {
-      posts: arrayUnion(postData),
-    }, { merge: true });
-    setPosts((prevPosts) => [...prevPosts, postData]);
-    setSuccessMessage('Publicación creada exitosamente!');
-    setTimeout(() => setSuccessMessage(''), 3000);
-  } catch (error) {
-    console.error('Error creating post:', error);
-  }
-};
+  const handleCreatePost = async (postData) => {
+    if (!postData.content.trim() && !postData.imageUrl) return;
+
+    const postDocRef = doc(firebaseDb, 'posts', currentUser.uid);
+    try {
+      await updateDoc(postDocRef, {
+        posts: arrayUnion(postData),
+      }, { merge: true });
+      setPosts((prevPosts) => [...prevPosts, postData]);
+      setSuccessMessage('Publicación creada exitosamente!');
+      setTimeout(() => setSuccessMessage(''), 3000);
+      
+      await sendNotificationsToAllUsers(postData);
+    } catch (error) {
+      console.error('Error creating post:', error);
+    }
+  };
 
   const handleDeletePost = async (postId) => {
     const postDocRef = doc(firebaseDb, 'posts', currentUser.uid);
@@ -71,6 +103,32 @@ const Home = () => {
       console.error('Error deleting post:', error);
     }
   };
+
+  const sendNotificationsToAllUsers = async (postData) => {
+  if (!userData || !userData.fullName) {
+    console.warn('userData or fullName is undefined');
+    return;
+  }
+  const usersSnapshot = await getDocs(collection(firebaseDb, 'users'));
+  const notifications = usersSnapshot.docs
+    .filter((doc) => doc.id !== currentUser.uid)
+    .map((doc) => {
+      const notificationRef = doc(firebaseDb, 'notifications', doc.id);
+      return updateDoc(notificationRef, {
+        notifications: arrayUnion({
+          id: Date.now().toString(),
+          message: `${userData.fullName} ha publicado: ${postData.content.substring(
+            0,
+            50
+          )}${postData.content.length > 50 ? '...' : ''}`,
+          timestamp: new Date().toISOString(),
+          read: false,
+        }),
+      }, { merge: true });
+    });
+
+  await Promise.all(notifications);
+};
 
   if (!currentUser) {
     return (
@@ -134,6 +192,7 @@ const Home = () => {
       </div>
       <PostForm onCreatePost={handleCreatePost} successMessage={successMessage} />
       <PostList posts={posts} onDeletePost={handleDeletePost} successMessage={successMessage} />
+      <NotificationPanel userId={currentUser.uid} />
     </div>
   );
 };

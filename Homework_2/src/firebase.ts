@@ -3,8 +3,8 @@ import { getAnalytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
 import * as firebaseui from "firebaseui";
 import { getFirestore } from "firebase/firestore";
+import { getMessaging } from "firebase/messaging";
 
-// Your web app's Firebase configuration
 const firebaseConfig = {
   apiKey: "AIzaSyAMxw1JnYsuyUwAqpjx271_hZGWnjzoCHM",
   authDomain: "desarrolloenlanube-a0d01.firebaseapp.com",
@@ -18,9 +18,9 @@ const firebaseConfig = {
 // Initialize Firebase
 export const firebaseApp = initializeApp(firebaseConfig);
 export const firebaseAnalytics = getAnalytics(firebaseApp);
-const firebaseAuth = getAuth(firebaseApp);
+export const firebaseAuth = getAuth(firebaseApp);
 export const firebaseUi = new firebaseui.auth.AuthUI(firebaseAuth);
 export const firebaseDb = getFirestore(firebaseApp);
+export const firebaseMessaging = getMessaging(firebaseApp);
 
 firebaseAuth.useDeviceLanguage();
-export { firebaseAuth };
